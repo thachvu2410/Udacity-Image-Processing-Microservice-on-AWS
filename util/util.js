@@ -11,21 +11,27 @@ import Jimp from "jimp";
 //    an absolute path to a filtered image locally saved file
  export async function filterImageFromURL(inputURL) {
   return new Promise(async (resolve, reject) => {
-    try {
-      const photo = await Jimp.read(inputURL);
+    console.log("abctwgasd2");
+    try{
       const outpath =
-        "/tmp/filtered." + Math.floor(Math.random() * 2000) + ".jpg";
-      await photo
-        .resize(256, 256) // resize
-        .quality(60) // set JPEG quality
-        .greyscale() // set greyscale
-        .write(outpath, (img) => {
-          resolve(outpath);
-        });
-    } catch (error) {
-      reject(error);
+      Math.floor(Math.random() * 2000) + ".jpg";
+      Jimp.read(inputURL)
+      .then((data) => {
+        return data
+          .resize(256, 256) // resize
+          .quality(60) // set JPEG quality
+          .greyscale() // set greyscale
+          .write(outpath, () => {
+            resolve(outpath);
+          }); // save
+      })
+      .catch(() => {
+        console.log('ERROR');
+      });
+    }catch(error){
+        console.log('ERROR')
     }
-  });
+});
 }
 
 // deleteLocalFiles
