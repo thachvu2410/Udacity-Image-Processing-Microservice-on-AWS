@@ -11,7 +11,6 @@ import Jimp from "jimp";
 //    an absolute path to a filtered image locally saved file
  export async function filterImageFromURL(inputURL) {
   return new Promise(async (resolve, reject) => {
-    console.log("abctwgasd2");
     try{
       const outpath =
       Math.floor(Math.random() * 2000) + ".jpg";
@@ -25,11 +24,13 @@ import Jimp from "jimp";
             resolve(outpath);
           }); // save
       })
-      .catch(() => {
+      .catch((err) => {
         console.log('ERROR');
+        resolve('');
       });
-    }catch(error){
+    }catch(err){
         console.log('ERROR')
+        reject('');
     }
 });
 }

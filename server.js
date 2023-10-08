@@ -2,8 +2,6 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import { filterImageFromURL, deleteLocalFiles } from './util/util.js';
 
-
-
 // Init the Express application
 const app = express();
 
@@ -32,16 +30,21 @@ app.use(bodyParser.json());
 app.get("/filteredimage", async (req, res) => {
   let serviceFunction = async function (data, deleteLocalFiles) {
     try {
-      console.log("abctwgasd1");
       let imgName = await filterImageFromURL(data);
-      
-      res.json({
-        status: "200",
-        message: "OK"
-      });
-      console.log("abctwgasd3");
-      // res.sendFile("D:\\Udacity\\Cloud Developer\\Full Stack Apps on AWS\\project2-SourceCode\\"+filteredpath);
-      deleteLocalFiles([imgName]);
+      if (imgName == '') {
+        console.error('cannot get img');
+        res.status(400);
+        res.send('File not found');
+      } else {
+        res.status(200);
+        res.send('OK');
+        // res.json({
+        //   status: "200",
+        //   message: "OK"
+        // });
+        // res.sendFile("D:\\Udacity\\Cloud Developer\\Full Stack Apps on AWS\\project2-SourceCode\\"+filteredpath);
+        deleteLocalFiles([imgName]);
+      }
     } catch (err) {
       console.error(err);
     }
@@ -50,11 +53,12 @@ app.get("/filteredimage", async (req, res) => {
   try {
     let imgURL = req.query.image_url;
     if (!imgURL) {
-      return res.status(400).send(`id is required`);
+      return res.status(400).send(`Invalid URL`);
     }
     await serviceFunction(imgURL, deleteLocalFiles);
   } catch (err) {
     console.error(err);
+    return res.status(500).send(`Internal Error`);
   }
 
 });
