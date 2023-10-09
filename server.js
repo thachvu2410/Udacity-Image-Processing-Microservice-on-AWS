@@ -2,14 +2,22 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import { filterImageFromURL, deleteLocalFiles } from './util/util.js';
 
+ 
+
 // Init the Express application
 const app = express();
+
+ 
 
 // Set the network port
 const port = process.env.PORT || 8082;
 
+ 
+
 // Use the body parser middleware for post requests
 app.use(bodyParser.json());
+
+ 
 
 // @TODO1 IMPLEMENT A RESTFUL ENDPOINT
 // GET /filteredimage?image_url={{URL}}
@@ -24,9 +32,7 @@ app.use(bodyParser.json());
 //    image_url: URL of a publicly accessible image
 // RETURNS
 //   the filtered image file [!!TIP res.sendFile(filteredpath); might be useful]
-
 /**************************************************************************** */
-
 app.get("/filteredimage", async (req, res) => {
   let serviceFunction = async function (data, deleteLocalFiles) {
     try {
@@ -36,14 +42,13 @@ app.get("/filteredimage", async (req, res) => {
         res.status(400);
         res.send('File not found');
       } else {
-        res.status(200);
-        res.send('OK');
-        // res.json({
-        //   status: "200",
-        //   message: "OK"
-        // });
-        // res.sendFile("D:\\Udacity\\Cloud Developer\\Full Stack Apps on AWS\\project2-SourceCode\\"+filteredpath);
-        deleteLocalFiles([imgName]);
+        console.log(imgName);
+        console.log("success");
+        res.status(200).sendFile(imgName);
+
+        setTimeout(() => {
+          deleteLocalFiles([imgName])
+      }, 1500)
       }
     } catch (err) {
       console.error(err);
@@ -64,14 +69,11 @@ app.get("/filteredimage", async (req, res) => {
 });
 
 //! END @TODO1
-
 // Root Endpoint
 // Displays a simple message to the user
 app.get("/", async (req, res) => {
   res.send("try GET /filteredimage?image_url={{}}")
 });
-
-
 // Start the Server
 app.listen(port, () => {
   console.log(`server running http://localhost:${port}`);
